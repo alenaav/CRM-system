@@ -9,7 +9,7 @@ class Employee(models.Model):
     name = models.CharField('Имя', max_length=100)
     phone = models.CharField('Телефон', max_length=20)
     role = models.CharField('Роль', max_length=20, choices=ROLE_CHOICES)
-    login = models.CharField('Логин', max_length=50)
+    login = models.CharField('Логин', max_length=50, unique=True)
     password = models.CharField('Пароль', max_length=100)
 
     class Meta:

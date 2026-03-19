@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Employee
 from .forms import EmployeeForm
 from .decorators import login_required, admin_required
+from django.contrib.auth.hashers import make_password, check_password
 
 
 # ЛОГИН
@@ -9,15 +10,18 @@ def login_view(request):
     error = ''
 
     if request.method == 'POST':
-        login = request.POST.get('login')
-        password = request.POST.get('password')
+        login_input = request.POST.get('login')
+        password_input = request.POST.get('password')
 
         try:
-            user = Employee.objects.get(login=login, password=password)
-            request.session['user_id'] = user.id
-            request.session['role'] = user.role
-            return redirect('главная')
-        except:
+            user = Employee.objects.get(login=login_input)
+            if check_password(password_input, user.password):
+                request.session['user_id'] = user.id
+                request.session['role'] = user.role
+                return redirect('сотрудники')
+            else:
+                error = 'Неверный логин или пароль'
+        except Employee.DoesNotExist:
             error = 'Неверный логин или пароль'
 
     return render(request, 'login.html', {'error': error})
@@ -42,7 +46,10 @@ def employee_create(request):
     if request.method == "POST":
         form = EmployeeForm(request.POST)
         if form.is_valid():
-            form.save()
+            employee = form.save(commit=False)
+            # Хэшируем пароль перед сохранением
+            employee.password = make_password(form.cleaned_data['password'])
+            employee.save()
             return redirect('сотрудники')
     else:
         form = EmployeeForm()
@@ -58,7 +65,11 @@ def employee_edit(request, pk):
     if request.method == "POST":
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
-            form.save()
+            employee = form.save(commit=False)
+            # Если пароль был изменен, хэшируем новый
+            if 'password' in form.changed_data:
+                employee.password = make_password(form.cleaned_data['password'])
+            employee.save()
             return redirect('сотрудники')
     else:
         form = EmployeeForm(instance=employee)

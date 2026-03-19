@@ -10,7 +10,7 @@ def login_required(view_func):
 
 def admin_required(view_func):
     def wrapper(request, *args, **kwargs):
-        if request.session.get('role') != 'admin':
-            return redirect('главная')
+        if not request.session.get('user_id') or request.session.get('role') != 'admin':
+            return redirect('login')  # сначала отправляем на логин
         return view_func(request, *args, **kwargs)
     return wrapper
