@@ -17,6 +17,7 @@ Including another URLconf
 from django.urls import path, include
 from django.contrib import admin
 from django.shortcuts import render
+from django.urls import path, include
 
 def home_view(request):
     return render(request, 'home.html')
@@ -25,6 +26,7 @@ urlpatterns = [
     path('', home_view, name='home'),  # Главная страница
     path('admin/', admin.site.urls),
     path('клиенты/', include('clients.urls')),
+    path('users/', include('users.urls')),
     path('сотрудники/', include('users.urls')),
     path('услуги/', include('services.urls')),
     path('записи/', include('appointments.urls')),

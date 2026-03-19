@@ -2,6 +2,11 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
+    #  авторизация
+    path('login/', views.login_view, name='login'),
+    path('logout/', views.logout_view, name='logout'),
+
+    # сотрудники
     path('', views.employees_list, name='сотрудники'),
     path('создать/', views.employee_create, name='создать_сотрудника'),
     path('<int:pk>/редактировать/', views.employee_edit, name='редактировать_сотрудника'),
