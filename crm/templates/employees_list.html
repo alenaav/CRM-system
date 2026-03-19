@@ -1,28 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Сотрудники</h2>
-<a href="{% url 'сотрудник_добавить' %}" class="btn btn-success mb-2">Добавить сотрудника</a>
+<h2>Список сотрудников</h2>
+<a href="{% url 'создать_сотрудника' %}" class="btn btn-success mb-2">Добавить сотрудника</a>
 <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Имя</th>
-      <th>Телефон</th>
-      <th>Роль</th>
-      <th>Действия</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for employee in employees %}
-    <tr>
-      <td>{{ employee.name }}</td>
-      <td>{{ employee.phone }}</td>
-      <td>{{ employee.get_role_display }}</td>
-      <td>
-        <a href="{% url 'сотрудник_редактировать' employee.id %}" class="btn btn-primary btn-sm">Редактировать</a>
-        <a href="{% url 'сотрудник_удалить' employee.id %}" class="btn btn-danger btn-sm">Удалить</a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Телефон</th>
+            <th>Роль</th>
+            <th>Логин</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for employee in employees %}
+        <tr>
+            <td>{{ employee.name }}</td>
+            <td>{{ employee.phone }}</td>
+            <td>{{ employee.get_role_display }}</td>
+            <td>{{ employee.login }}</td>
+            <td>
+                <a href="{% url 'редактировать_сотрудника' employee.pk %}" class="btn btn-primary btn-sm">Редактировать</a>
+                <a href="{% url 'удалить_сотрудника' employee.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

@@ -4,9 +4,8 @@ from .models import Service
 class ServiceForm(forms.ModelForm):
     class Meta:
         model = Service
-        fields = ['name', 'duration', 'price']
+        fields = ['name', 'price']
         labels = {
-            'name': 'Название',
-            'duration': 'Длительность (мин)',
+            'name': 'Название услуги',
             'price': 'Цена',
         }

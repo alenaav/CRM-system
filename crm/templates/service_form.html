@@ -1,10 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Форма услуги</h2>
+<h2>{% if form.instance.pk %}Редактировать{% else %}Создать{% endif %} услугу</h2>
 <form method="post">
-  {% csrf_token %}
-  {{ form.as_p }}
-  <button type="submit" class="btn btn-primary">Сохранить</button>
-  <a href="{% url 'услуги' %}" class="btn btn-secondary">Отмена</a>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Сохранить</button>
 </form>
 {% endblock %}

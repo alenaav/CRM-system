@@ -11,18 +11,18 @@ def service_create(request):
         form = ServiceForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('services')
+            return redirect('услуги')
     else:
         form = ServiceForm()
     return render(request, 'service_form.html', {'form': form})
 
-def service_update(request, pk):
+def service_edit(request, pk):
     service = get_object_or_404(Service, pk=pk)
     if request.method == "POST":
         form = ServiceForm(request.POST, instance=service)
         if form.is_valid():
             form.save()
-            return redirect('services')
+            return redirect('услуги')
     else:
         form = ServiceForm(instance=service)
     return render(request, 'service_form.html', {'form': form})
@@ -30,4 +30,4 @@ def service_update(request, pk):
 def service_delete(request, pk):
     service = get_object_or_404(Service, pk=pk)
     service.delete()
-    return redirect('services')
+    return redirect('услуги')

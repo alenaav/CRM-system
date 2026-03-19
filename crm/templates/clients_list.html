@@ -1,28 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
-<h2>Клиенты</h2>
-<a href="{% url 'клиент_добавить' %}" class="btn btn-success mb-2">Добавить клиента</a>
+<h2>Список клиентов</h2>
+<a href="{% url 'создать_клиента' %}" class="btn btn-success mb-2">Добавить клиента</a>
 <table class="table table-striped">
-  <thead>
-    <tr>
-      <th>Имя</th>
-      <th>Телефон</th>
-      <th>Комментарий</th>
-      <th>Действия</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for client in clients %}
-    <tr>
-      <td>{{ client.name }}</td>
-      <td>{{ client.phone }}</td>
-      <td>{{ client.comment }}</td>
-      <td>
-        <a href="{% url 'клиент_редактировать' client.id %}" class="btn btn-primary btn-sm">Редактировать</a>
-        <a href="{% url 'клиент_удалить' client.id %}" class="btn btn-danger btn-sm">Удалить</a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Телефон</th>
+            <th>Email</th>
+            <th>Адрес</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for client in clients %}
+        <tr>
+            <td>{{ client.name }}</td>
+            <td>{{ client.phone }}</td>
+            <td>{{ client.email }}</td>
+            <td>{{ client.address }}</td>
+            <td>
+                <a href="{% url 'редактировать_клиента' client.pk %}" class="btn btn-primary btn-sm">Редактировать</a>
+                <a href="{% url 'удалить_клиента' client.pk %}" class="btn btn-danger btn-sm">Удалить</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
 </table>
 {% endblock %}

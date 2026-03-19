@@ -4,9 +4,10 @@ from .models import Client
 class ClientForm(forms.ModelForm):
     class Meta:
         model = Client
-        fields = ['name', 'phone', 'comment']
+        fields = ['name', 'phone', 'email', 'address']
         labels = {
             'name': 'Имя',
             'phone': 'Телефон',
-            'comment': 'Комментарий',
+            'email': 'Email',
+            'address': 'Адрес',
         }

@@ -11,18 +11,18 @@ def employee_create(request):
         form = EmployeeForm(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('employees')
+            return redirect('сотрудники')
     else:
         form = EmployeeForm()
     return render(request, 'employee_form.html', {'form': form})
 
-def employee_update(request, pk):
+def employee_edit(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     if request.method == "POST":
         form = EmployeeForm(request.POST, instance=employee)
         if form.is_valid():
             form.save()
-            return redirect('employees')
+            return redirect('сотрудники')
     else:
         form = EmployeeForm(instance=employee)
     return render(request, 'employee_form.html', {'form': form})
@@ -30,4 +30,4 @@ def employee_update(request, pk):
 def employee_delete(request, pk):
     employee = get_object_or_404(Employee, pk=pk)
     employee.delete()
-    return redirect('employees')
+    return redirect('сотрудники')

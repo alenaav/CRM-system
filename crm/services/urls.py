@@ -2,8 +2,8 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('', views.services_list, name='services'),
-    path('create/', views.service_create, name='service_create'),
-    path('update/<int:pk>/', views.service_update, name='service_update'),
-    path('delete/<int:pk>/', views.service_delete, name='service_delete'),
+    path('', views.services_list, name='услуги'),
+    path('создать/', views.service_create, name='создать_услугу'),
+    path('<int:pk>/редактировать/', views.service_edit, name='редактировать_услугу'),
+    path('<int:pk>/удалить/', views.service_delete, name='удалить_услугу'),
 ]

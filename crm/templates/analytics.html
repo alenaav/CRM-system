@@ -1,17 +1,27 @@
 {% extends "base.html" %}
+
 {% block content %}
-<h2>Аналитика</h2>
-<p>Количество записей: {{ total_appointments }}</p>
-<p>Загрузка сотрудников:</p>
-<ul>
-    {% for employee, count in employee_load.items %}
-    <li>{{ employee }}: {{ count }} записей</li>
-    {% endfor %}
-</ul>
-<p>Статистика по услугам:</p>
-<ul>
-    {% for service, count in service_stats.items %}
-    <li>{{ service }}: {{ count }} записей</li>
-    {% endfor %}
-</ul>
+<div class="container mt-4">
+    <h2>Аналитика</h2>
+
+    <p><strong>Общее количество записей:</strong> {{ total_appointments }}</p>
+
+    <h4>Загрузка сотрудников</h4>
+    <ul>
+        {% for employee, count in employee_load.items %}
+        <li>{{ employee }}: {{ count }} записей</li>
+        {% empty %}
+        <li>Нет данных</li>
+        {% endfor %}
+    </ul>
+
+    <h4>Статистика по услугам</h4>
+    <ul>
+        {% for service, count in service_stats.items %}
+        <li>{{ service }}: {{ count }} записей</li>
+        {% empty %}
+        <li>Нет данных</li>
+        {% endfor %}
+    </ul>
+</div>
 {% endblock %}
