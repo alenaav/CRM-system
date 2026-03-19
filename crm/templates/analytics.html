@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Аналитика</h2>
+<p>Количество записей: {{ total_appointments }}</p>
+<p>Загрузка сотрудников:</p>
+<ul>
+    {% for employee, count in employee_load.items %}
+    <li>{{ employee }}: {{ count }} записей</li>
+    {% endfor %}
+</ul>
+<p>Статистика по услугам:</p>
+<ul>
+    {% for service, count in service_stats.items %}
+    <li>{{ service }}: {{ count }} записей</li>
+    {% endfor %}
+</ul>
+{% endblock %}

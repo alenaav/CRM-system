@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Записи</h2>
+<a href="{% url 'запись_добавить' %}" class="btn btn-success mb-2">Добавить запись</a>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Клиент</th>
+      <th>Сотрудник</th>
+      <th>Услуга</th>
+      <th>Дата</th>
+      <th>Время</th>
+      <th>Статус</th>
+      <th>Действия</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for appointment in appointments %}
+    <tr>
+      <td>{{ appointment.client.name }}</td>
+      <td>{{ appointment.employee.name }}</td>
+      <td>{{ appointment.service.name }}</td>
+      <td>{{ appointment.date }}</td>
+      <td>{{ appointment.time }}</td>
+      <td>{{ appointment.get_status_display }}</td>
+      <td>
+        <a href="{% url 'запись_редактировать' appointment.id %}" class="btn btn-primary btn-sm">Редактировать</a>
+        <a href="{% url 'запись_удалить' appointment.id %}" class="btn btn-danger btn-sm">Удалить</a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}
