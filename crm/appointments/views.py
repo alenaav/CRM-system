@@ -2,11 +2,14 @@ from django.shortcuts import render, get_object_or_404, redirect
 from .models import Appointment, Schedule
 from .forms import AppointmentForm, ScheduleForm
 from django.views.decorators.http import require_http_methods
+import calendar
+from datetime import date
+from django.utils.safestring import mark_safe
+from django.db.models import Prefetch
+from .models import Appointment
+from users.decorators import login_required
 
 # Записи
-def appointments_list(request):
-    appointments = Appointment.objects.all()
-    return render(request, 'appointments_list.html', {'appointments': appointments})
 
 def appointment_create(request):
     if request.method == "POST":
@@ -78,3 +81,65 @@ def schedule_delete(request, pk):
     schedule = get_object_or_404(Schedule, pk=pk)
     schedule.delete()
     return redirect('расписание')
+
+class ScheduleCalendar(calendar.HTMLCalendar):
+    def __init__(self, year, month, appointments):
+        super().__init__(firstweekday=0)  # 0 = Monday
+        self.year = year
+        self.month = month
+        # appointments сгруппируем по дате
+        self.appointments_by_day = {}
+        for a in appointments:
+            self.appointments_by_day.setdefault(a.date.day, []).append(a)
+
+    def formatday(self, day, weekday):
+        if day == 0:
+            return '<td class="noday">&nbsp;</td>'
+
+        aps = self.appointments_by_day.get(day, [])
+        items = ''
+        for a in aps:
+            items += f'<div class="small">{a.time.strftime("%H:%M")} {a.employee.name} – {a.service.name}</div>'
+
+        return f'<td class="day"><span class="date">{day}</span>{items}</td>'
+
+    def formatmonth(self, withyear=True):
+        html = super().formatmonth(self.year, self.month, withyear=withyear)
+        return html.replace(
+            '<table border="0" cellpadding="0" cellspacing="0"',
+            '<table class="calendar"'
+        )
+
+
+@login_required
+def schedule_calendar(request, year=None, month=None):
+    today = date.today()
+    year = int(year or today.year)
+    month = int(month or today.month)
+
+    # подтянем связанные сущности
+    appointments = (
+        Appointment.objects
+        .filter(date__year=year, date__month=month)
+        .select_related('employee', 'service')
+    )
+
+    cal = ScheduleCalendar(year, month, appointments)
+    html_cal = cal.formatmonth(withyear=True)
+
+    # посчитаем соседние месяца для навигации
+    prev_month = month - 1 or 12
+    prev_year = year - 1 if month == 1 else year
+    next_month = month + 1 if month < 12 else 1
+    next_year = year + 1 if month == 12 else year
+
+    context = {
+        'calendar': mark_safe(html_cal),
+        'year': year,
+        'month': month,
+        'prev_year': prev_year,
+        'prev_month': prev_month,
+        'next_year': next_year,
+        'next_month': next_month,
+    }
+    return render(request, 'schedule_calendar.html', context)

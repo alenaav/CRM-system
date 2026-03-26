@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Календарь расписания: {{ month }} / {{ year }}</h2>
+
+<div class="mb-3">
+    <a class="btn btn-outline-primary btn-sm"
+       href="{% url 'календарь_месяц' prev_year prev_month %}">« Предыдущий</a>
+    <a class="btn btn-outline-primary btn-sm"
+       href="{% url 'календарь_месяц' next_year next_month %}">Следующий »</a>
+</div>
+
+<style>
+    table.calendar {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    table.calendar th {
+        text-align: center;
+        padding: 10px 5px;
+        background: #0d6efd;
+        color: #fff;
+    }
+    table.calendar td {
+        border: 1px solid #ddd;
+        vertical-align: top;
+        height: 120px;
+        padding: 5px;
+        font-size: 12px;
+    }
+    table.calendar td .date {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 3px;
+        color: #333;
+    }
+    table.calendar td .small {
+        font-size: 11px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 1px;
+    }
+    td.noday {
+        background: #f8f9fa;
+    }
+</style>
+
+<div class="table-responsive">
+    {{ calendar|safe }}
+</div>
+{% endblock %}

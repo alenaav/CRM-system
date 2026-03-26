@@ -13,4 +13,6 @@ urlpatterns = [
     path('расписание/создать/', views.schedule_create, name='создать_расписание'),
     path('расписание/<int:pk>/редактировать/', views.schedule_edit, name='редактировать_расписание'),
     path('расписание/<int:pk>/удалить/', views.schedule_delete, name='удалить_расписание'),
+    path('календарь/', views.schedule_calendar, name='календарь'),
+    path('календарь/<int:year>/<int:month>/', views.schedule_calendar, name='календарь_месяц'),
 ]
