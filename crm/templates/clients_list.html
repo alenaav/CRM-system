@@ -8,7 +8,6 @@
             <th>Имя</th>
             <th>Телефон</th>
             <th>Email</th>
-            <th>Адрес</th>
             <th>Действия</th>
         </tr>
     </thead>
@@ -18,7 +17,6 @@
             <td>{{ client.name }}</td>
             <td>{{ client.phone }}</td>
             <td>{{ client.email }}</td>
-            <td>{{ client.address }}</td>
             <td>
                 <a href="{% url 'редактировать_клиента' client.pk %}" class="btn btn-primary btn-sm">Редактировать</a>
                 <a href="{% url 'удалить_клиента' client.pk %}" class="btn btn-danger btn-sm">Удалить</a>

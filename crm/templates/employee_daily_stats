@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Нагрузка по дням</h2>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Сотрудник</th>
+            <th>Дата</th>
+            <th>Количество записей</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for row in stats %}
+        <tr>
+            <td>{{ row.employee__name }}</td>
+            <td>{{ row.day }}</td>
+            <td>{{ row.count }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
