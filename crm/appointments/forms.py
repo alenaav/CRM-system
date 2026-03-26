@@ -13,6 +13,14 @@ class AppointmentForm(forms.ModelForm):
             'time': 'Время',
             'status': 'Статус',
         }
+        widgets = {
+            'client': forms.Select(attrs={'class': 'form-select'}),
+            'employee': forms.Select(attrs={'class': 'form-select'}),
+            'service': forms.Select(attrs={'class': 'form-select'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'status': forms.Select(attrs={'class': 'form-select'}),
+        }
 
 class ScheduleForm(forms.ModelForm):
     class Meta:
@@ -23,4 +31,10 @@ class ScheduleForm(forms.ModelForm):
             'date': 'Дата',
             'start_time': 'Начало',
             'end_time': 'Конец',
+        }
+        widgets = {
+            'employee': forms.Select(attrs={'class': 'form-select'}),
+            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
+            'start_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
+            'end_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
         }
