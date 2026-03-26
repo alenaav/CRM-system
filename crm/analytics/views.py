@@ -1,35 +1,64 @@
 from django.shortcuts import render
+from django.db.models import Count, Sum
 from appointments.models import Appointment
 from users.models import Employee
 from services.models import Service
-from django.db.models import Count
-from django.db.models.functions import TruncDate
+from datetime import timedelta
+from django.utils import timezone
+
 
 def analytics_dashboard(request):
-    total_appointments = Appointment.objects.count()
-
-    # Сколько записей у каждого сотрудника
-    employee_load = Appointment.objects.values('employee__name').annotate(count=Count('id'))
-    employee_stats = {e['employee__name']: e['count'] for e in employee_load}
-
-    # Сколько записей по каждой услуге
-    service_load = Appointment.objects.values('service__name').annotate(count=Count('id'))
-    service_stats = {s['service__name']: s['count'] for s in service_load}
-
+    today = timezone.now().date()
+    
+    # Фильтры
+    date_from = request.GET.get('date_from')
+    date_to = request.GET.get('date_to')
+    employee_id = request.GET.get('employee')
+    service_id = request.GET.get('service')
+    
+    qs = Appointment.objects.select_related('client', 'employee', 'service')
+    
+    if date_from:
+        qs = qs.filter(date__gte=date_from)
+    if date_to:
+        qs = qs.filter(date__lte=date_to)
+    if employee_id:
+        qs = qs.filter(employee_id=employee_id)
+    if service_id:
+        qs = qs.filter(service_id=service_id)
+    
+    # Метрики
+    total_appointments = qs.count()
+    total_revenue = qs.aggregate(total=Sum('service__price'))['total'] or 0
+    
+    # Статистика
+    employee_stats = (
+        qs.values('employee__name')
+        .annotate(count=Count('id'), revenue=Sum('service__price'))
+        .order_by('-count')
+    )
+    
+    service_stats = (
+        qs.values('service__name')
+        .annotate(count=Count('id'), revenue=Sum('service__price'))
+        .order_by('-revenue')
+    )
+    
+    top_clients = (
+        qs.values('client__name')
+        .annotate(count=Count('id'))
+        .order_by('-count')[:3]
+    )
+    
     context = {
         'total_appointments': total_appointments,
-        'employee_load': employee_stats,
-        'service_stats': service_stats
+        'total_revenue': total_revenue,
+        'employee_stats': employee_stats,
+        'service_stats': service_stats,
+        'top_clients': top_clients,
+        'date_from': date_from,
+        'date_to': date_to,
+        'employees': Employee.objects.all(),
+        'services': Service.objects.all(),
     }
-
     return render(request, 'analytics.html', context)
-
-def employee_daily_stats(request):
-    stats = (
-        Appointment.objects
-        .annotate(day=TruncDate('date'))
-        .values('employee__name', 'day')
-        .annotate(count=Count('id'))
-        .order_by('employee__name', 'day')
-    )
-    return render(request, 'employee_daily_stats.html', {'stats': stats})

@@ -23,16 +23,3 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.client} - {self.service} ({self.date} {self.time})"
-
-class Schedule(models.Model):
-    employee = models.ForeignKey(Employee, verbose_name='Сотрудник', on_delete=models.CASCADE)
-    date = models.DateField('Дата')
-    start_time = models.TimeField('Начало')
-    end_time = models.TimeField('Конец')
-
-    class Meta:
-        verbose_name = 'Расписание'
-        verbose_name_plural = 'Расписания'
-
-    def __str__(self):
-        return f"{self.employee} - {self.date} {self.start_time}-{self.end_time}"

@@ -17,9 +17,8 @@
                     <li class="nav-item"><a class="nav-link" href="{% url 'сотрудники' %}">Сотрудники</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'услуги' %}">Услуги</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'записи' %}">Записи</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'расписание' %}">Расписание</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{% url 'аналитика' %}">Аналитика</a></li>
                     <li class="nav-item"><a class="nav-link" href="{% url 'календарь' %}">Календарь</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'аналитика' %}">Аналитика</a></li>
                 </ul>
                 <ul class="navbar-nav ms-auto">
                     {% if request.session.user_id %}

@@ -1,27 +1,158 @@
 {% extends "base.html" %}
-
 {% block content %}
-<div class="container mt-4">
-    <h2>Аналитика</h2>
-
-    <p><strong>Общее количество записей:</strong> {{ total_appointments }}</p>
-
-    <h4>Загрузка сотрудников</h4>
-    <ul>
-        {% for employee, count in employee_load.items %}
-        <li>{{ employee }}: {{ count }} записей</li>
-        {% empty %}
-        <li>Нет данных</li>
-        {% endfor %}
-    </ul>
-
-    <h4>Статистика по услугам</h4>
-    <ul>
-        {% for service, count in service_stats.items %}
-        <li>{{ service }}: {{ count }} записей</li>
-        {% empty %}
-        <li>Нет данных</li>
-        {% endfor %}
-    </ul>
-</div>
+<div class="container-fluid">
+    <h1 class="mb-4">📊 Аналитика CRM</h1>
+    
+    <!-- Фильтры -->
+    <div class="card mb-4">
+        <div class="card-header">
+            <h5>🔍 Фильтры</h5>
+        </div>
+        <div class="card-body">
+            <form method="get" class="row g-3">
+                <div class="col-md-3">
+                    <label class="form-label">С даты</label>
+                    <input type="date" name="date_from" class="form-control" value="{{ date_from }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">По дату</label>
+                    <input type="date" name="date_to" class="form-control" value="{{ date_to }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Сотрудник</label>
+                    <select name="employee" class="form-select">
+                        <option value="">Все</option>
+                        {% for emp in employees %}
+                            <option value="{{ emp.id }}" {% if request.GET.employee == emp.id|stringformat:"s" %}selected{% endif %}>
+                                {{ emp.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Услуга</label>
+                    <select name="service" class="form-select">
+                        <option value="">Все</option>
+                        {% for srv in services %}
+                            <option value="{{ srv.id }}" {% if request.GET.service == srv.id|stringformat:"s" %}selected{% endif %}>
+                                {{ srv.name }}
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-primary">Применить</button>
+                    <a href="{% url 'аналитика' %}" class="btn btn-secondary">Сбросить</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Ключевые метрики -->
+    <div class="row mb-4">
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-primary shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                Всего записей
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-dark">
+                                {{ total_appointments|default:0 }}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-md-6 mb-4">
+            <div class="card border-start border-success shadow h-100 py-2">
+                <div class="card-body">
+                    <div class="row no-gutters align-items-center">
+                        <div class="col">
+                            <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                Выручка
+                            </div>
+                            <div class="h5 mb-0 font-weight-bold text-dark">
+                                {{ total_revenue|floatformat:2 }} ₽
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- График -->
+        <div class="col-xl-8 col-lg-7">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">📈 Записи по дням</h6>
+                </div>
+                <div class="card-body">
+                    <canvas id="dailyChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Топ клиенты -->
+        <div class="col-xl-4 col-lg-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">👥 Топ-3 клиентов</h6>
+                </div>
+                <div class="card-body">
+                    {% for client in top_clients %}
+                        <div class="d-flex align-items-center mb-3 p-2 bg-light rounded">
+                            <div class="bg-primary rounded-circle p-2 me-3">
+                                <span class="text-white">👤</span>
+                            </div>
+                            <div>
+                                <div class="fw-bold">{{ client.client__name }}</div>
+                                <small class="text-muted">{{ client.count }} записей</small>
+                            </div>
+                        </div>
+                    {% empty %}
+                        <p class="text-muted text-center py-3">Нет данных</p>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Сотрудники -->
+        <div class="col-lg-6 mb-4">
+            <div class="card shadow">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">👨‍💼 По сотрудникам</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table table-hover table-sm">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>Сотрудник</th>
+                                    <th>Записи</th>
+                                    <th>Выручка</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for stat in employee_stats %}
+                                    <tr>
+                                        <td>{{ stat.employee__name }}</td>
+                                        <td><span class="badge bg-primary rounded-pill">{{ stat.count }}</span></td>
+                                        <td><strong>{{ stat.revenue|floatformat:0 }} ₽</strong></td>
+                                    </tr>
+                                {% empty %}
+                                    <tr><td colspan="3" class="text-center text-muted py-4">Нет данных</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
 {% endblock %}

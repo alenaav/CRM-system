@@ -1,5 +1,5 @@
 from django import forms
-from .models import Appointment, Schedule
+from .models import Appointment
 
 class AppointmentForm(forms.ModelForm):
     class Meta:
@@ -20,21 +20,4 @@ class AppointmentForm(forms.ModelForm):
             'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
             'time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
             'status': forms.Select(attrs={'class': 'form-select'}),
-        }
-
-class ScheduleForm(forms.ModelForm):
-    class Meta:
-        model = Schedule
-        fields = ['employee', 'date', 'start_time', 'end_time']
-        labels = {
-            'employee': 'Сотрудник',
-            'date': 'Дата',
-            'start_time': 'Начало',
-            'end_time': 'Конец',
-        }
-        widgets = {
-            'employee': forms.Select(attrs={'class': 'form-select'}),
-            'date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}),
-            'start_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
-            'end_time': forms.TimeInput(attrs={'class': 'form-control', 'type': 'time'}),
         }

@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Appointment, Schedule
-from .forms import AppointmentForm, ScheduleForm
+from .models import Appointment
+from .forms import AppointmentForm
 from django.views.decorators.http import require_http_methods
 import calendar
 from datetime import date
@@ -50,37 +50,6 @@ def appointments_list(request):
         'appointments': appointments,
         'search': search,
     })
-
-# Расписание
-def schedule_list(request):
-    schedules = Schedule.objects.all()
-    return render(request, 'schedule_list.html', {'schedules': schedules})
-
-def schedule_create(request):
-    if request.method == "POST":
-        form = ScheduleForm(request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect('расписание')
-    else:
-        form = ScheduleForm()
-    return render(request, 'schedule_form.html', {'form': form})
-
-def schedule_edit(request, pk):
-    schedule = get_object_or_404(Schedule, pk=pk)
-    if request.method == "POST":
-        form = ScheduleForm(request.POST, instance=schedule)
-        if form.is_valid():
-            form.save()
-            return redirect('расписание')
-    else:
-        form = ScheduleForm(instance=schedule)
-    return render(request, 'schedule_form.html', {'form': form})
-
-def schedule_delete(request, pk):
-    schedule = get_object_or_404(Schedule, pk=pk)
-    schedule.delete()
-    return redirect('расписание')
 
 class ScheduleCalendar(calendar.HTMLCalendar):
     def __init__(self, year, month, appointments):

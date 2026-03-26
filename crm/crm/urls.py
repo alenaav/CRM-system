@@ -30,6 +30,5 @@ urlpatterns = [
     path('сотрудники/', include('users.urls')),
     path('услуги/', include('services.urls')),
     path('записи/', include('appointments.urls')),
-    path('расписание/', include('appointments.urls')),
     path('аналитика/', include('analytics.urls')),
 ]
